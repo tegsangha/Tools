@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Tools</title>
+<meta name="description" content="A collection of tools and projects I've built.">
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --text: #151a21;
+    --muted: #5b6573;
+    --border: #e2e6ec;
+    --accent: #e8590c;
+    --accent-soft: #fff1e8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1318;
+      --card: #171d25;
+      --text: #eef1f5;
+      --muted: #9aa5b4;
+      --border: #263040;
+      --accent: #ff8a3d;
+      --accent-soft: #2a1d14;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+  header { padding: 56px 0 28px; }
+  header h1 { margin: 0 0 8px; font-size: clamp(2rem, 6vw, 3rem); letter-spacing: -0.02em; }
+  header p { margin: 0; color: var(--muted); font-size: 1.05rem; max-width: 560px; }
+  .search {
+    margin: 24px 0 8px;
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+  }
+  .search:focus { outline: 2px solid var(--accent); border-color: transparent; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    padding: 16px 0 48px;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+  }
+  .card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 6px 20px rgba(0,0,0,.08); }
+  .icon {
+    width: 40px; height: 40px;
+    display: grid; place-items: center;
+    font-size: 1.3rem;
+    background: var(--accent-soft);
+    border-radius: 10px;
+  }
+  .card h2 { margin: 4px 0 0; font-size: 1.1rem; }
+  .card p { margin: 0; color: var(--muted); font-size: .95rem; flex: 1; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .tag {
+    font-size: .75rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .open { margin-top: 6px; font-size: .9rem; font-weight: 600; color: var(--accent); }
+  .empty { color: var(--muted); padding: 24px 0; display: none; }
+  footer { border-top: 1px solid var(--border); padding: 20px 0 40px; color: var(--muted); font-size: .85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>My Tools</h1>
+    <p>Tools, calculators and projects I've built. Tap one to open it.</p>
+    <input class="search" id="q" type="search" placeholder="Search tools..." aria-label="Search tools">
+  </header>
+
+  <main>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty">No tools match your search.</div>
+  </main>
+
+  <footer>
+    <span id="count"></span> &middot; Built with Claude
+  </footer>
+</div>
+
+<script>
+  /* ============================================================
+     ADD YOUR ARTIFACTS HERE
+     For each one: create a folder with an index.html inside it,
+     then add an entry below. `url` is the folder name + "/".
+     ============================================================ */
+  const projects = [
+    {
+      title: "A1000 Tech",
+      description: "Describe what A1000 Tech does in a sentence or two.",
+      url: "a1000-tech/",
+      icon: "⚙️",
+      tags: ["Tool"]
+    },
+    {
+      title: "Your Next Project",
+      description: "Replace this card with your next artifact, or delete it.",
+      url: "next-project/",
+      icon: "🚀",
+      tags: ["Idea"]
+    }
+  ];
+
+  const grid = document.getElementById("grid");
+  const empty = document.getElementById("empty");
+  const q = document.getElementById("q");
+  document.getElementById("count").textContent =
+    projects.length + (projects.length === 1 ? " project" : " projects");
+
+  function render(list) {
+    grid.innerHTML = "";
+    list.forEach(p => {
+      const a = document.createElement("a");
+      a.className = "card";
+      a.href = p.url;
+
+      const icon = document.createElement("div");
+      icon.className = "icon";
+      icon.textContent = p.icon || "📄";
+
+      const h = document.createElement("h2");
+      h.textContent = p.title;
+
+      const d = document.createElement("p");
+      d.textContent = p.description;
+
+      const tags = document.createElement("div");
+      tags.className = "tags";
+      (p.tags || []).forEach(t => {
+        const s = document.createElement("span");
+        s.className = "tag";
+        s.textContent = t;
+        tags.appendChild(s);
+      });
+
+      const open = document.createElement("div");
+      open.className = "open";
+      open.textContent = "Open →";
+
+      a.append(icon, h, d, tags, open);
+      grid.appendChild(a);
+    });
+    empty.style.display = list.length ? "none" : "block";
+  }
+
+  q.addEventListener("input", () => {
+    const term = q.value.trim().toLowerCase();
+    render(projects.filter(p =>
+      (p.title + " " + p.description + " " + (p.tags || []).join(" "))
+        .toLowerCase().includes(term)
+    ));
+  });
+
+  render(projects);
+</script>
+</body>
+</html>
