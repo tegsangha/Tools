@@ -5,25 +5,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>My Tools</title>
 <meta name="description" content="A collection of tools and projects I've built.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
 <style>
   :root {
-    --bg: #f6f7f9;
-    --card: #ffffff;
-    --text: #151a21;
-    --muted: #5b6573;
-    --border: #e2e6ec;
-    --accent: #e8590c;
-    --accent-soft: #fff1e8;
+    --bg: #eef3fa;
+    --surface: #ffffff;
+    --text: #0f1b2d;
+    --muted: #4a5a72;
+    --border: #d6dfec;
+    --navy: #0d2b45;
+    --navy-ink: #ffffff;
+    --signal: #ffc21a;
+    --brew: #d9480f;  --brew-ink: #ffffff;
+    --fluid: #1971c2; --fluid-ink: #ffffff;
+    --heat: #c92a2a;  --heat-ink: #ffffff;
+    --milk: #0b7f6f;  --milk-ink: #ffffff;
+    --elec: #6741d9;  --elec-ink: #ffffff;
+    --warn: #f5b800;  --warn-ink: #2b2100;
+    --font-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+    --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #0f1318;
-      --card: #171d25;
-      --text: #eef1f5;
-      --muted: #9aa5b4;
-      --border: #263040;
-      --accent: #ff8a3d;
-      --accent-soft: #2a1d14;
+      --bg: #0a111c;
+      --surface: #121c2b;
+      --text: #e8eef8;
+      --muted: #9fb0c8;
+      --border: #25354d;
+      --navy: #14395c;
+      --brew: #ff8a4c;  --brew-ink: #2a1100;
+      --fluid: #5aa9ff; --fluid-ink: #04162b;
+      --heat: #ff7b72;  --heat-ink: #2d0707;
+      --milk: #3fd3bd;  --milk-ink: #032a24;
+      --elec: #a58bff;  --elec-ink: #140a3a;
+      --warn: #ffd23f;  --warn-ink: #2b2100;
     }
   }
   * { box-sizing: border-box; }
@@ -31,72 +49,132 @@
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    line-height: 1.5;
+    font-family: var(--font-body);
+    line-height: 1.55;
   }
-  .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
-  header { padding: 56px 0 28px; }
-  header h1 { margin: 0 0 8px; font-size: clamp(2rem, 6vw, 3rem); letter-spacing: -0.02em; }
-  header p { margin: 0; color: var(--muted); font-size: 1.05rem; max-width: 560px; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 16px; }
+  .hero {
+    margin-top: 16px;
+    background: var(--navy);
+    color: var(--navy-ink);
+    border-radius: 16px;
+    padding: 36px clamp(18px, 4vw, 36px) 0;
+    overflow: hidden;
+  }
+  .kicker {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: .78rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--signal);
+  }
+  .hero h1 {
+    margin: 8px 0 10px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2.2rem, 8vw, 3.8rem);
+    line-height: 1;
+    letter-spacing: -.02em;
+  }
+  .hero p.sub { margin: 0 0 30px; max-width: 52ch; color: rgba(255,255,255,.84); font-size: 1.05rem; }
+  .spectrum { display: flex; height: 10px; margin-inline: calc(-1 * clamp(18px, 4vw, 36px)); }
+  .spectrum i { flex: 1; }
   .search {
-    margin: 24px 0 8px;
+    display: block;
+    margin: 20px 0 6px;
     width: 100%;
-    padding: 12px 14px;
-    font-size: 1rem;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--card);
+    padding: 14px 16px;
+    font: inherit;
+    font-size: 1.02rem;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    background: var(--surface);
     color: var(--text);
   }
-  .search:focus { outline: 2px solid var(--accent); border-color: transparent; }
+  .search::placeholder { color: var(--muted); }
+  .search:focus { outline: none; border-color: var(--fluid); }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
     padding: 16px 0 48px;
   }
   .card {
+    --hue: var(--brew);
+    --hue-ink: var(--brew-ink);
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 18px;
-    background: var(--card);
+    background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 14px;
+    border-radius: 16px;
+    overflow: hidden;
     text-decoration: none;
     color: inherit;
-    transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+    transition: transform .15s ease, box-shadow .15s ease;
   }
-  .card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 6px 20px rgba(0,0,0,.08); }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,.16); }
+  .card:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
+  .cap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--hue);
+    color: var(--hue-ink);
+  }
   .icon {
-    width: 40px; height: 40px;
+    flex: none;
+    width: 46px; height: 46px;
     display: grid; place-items: center;
-    font-size: 1.3rem;
-    background: var(--accent-soft);
-    border-radius: 10px;
+    font-size: 1.45rem;
+    background: rgba(255,255,255,.92);
+    border-radius: 12px;
   }
-  .card h2 { margin: 4px 0 0; font-size: 1.1rem; }
-  .card p { margin: 0; color: var(--muted); font-size: .95rem; flex: 1; }
-  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .tags { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
   .tag {
-    font-size: .75rem;
-    padding: 2px 8px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: .72rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 3px 9px;
     border-radius: 999px;
-    border: 1px solid var(--border);
-    color: var(--muted);
+    background: rgba(255,255,255,.22);
+    background: color-mix(in srgb, var(--hue-ink) 18%, transparent);
+    color: var(--hue-ink);
   }
-  .open { margin-top: 6px; font-size: .9rem; font-weight: 600; color: var(--accent); }
+  .body { display: flex; flex-direction: column; gap: 8px; flex: 1; padding: 16px 18px 18px; }
+  .card h2 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; line-height: 1.15; letter-spacing: -.01em; }
+  .card p { margin: 0; color: var(--muted); font-size: .96rem; flex: 1; }
+  .open {
+    align-self: flex-start;
+    margin-top: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--hue);
+    color: var(--hue-ink);
+    font-size: .9rem;
+    font-weight: 700;
+  }
   .empty { color: var(--muted); padding: 24px 0; display: none; }
   footer { border-top: 1px solid var(--border); padding: 20px 0 40px; color: var(--muted); font-size: .85rem; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
+  <header class="hero">
+    <p class="kicker">Tools &amp; projects</p>
     <h1>My Tools</h1>
-    <p>Tools, calculators and projects I've built. Tap one to open it.</p>
-    <input class="search" id="q" type="search" placeholder="Search tools..." aria-label="Search tools">
+    <p class="sub">Tools, calculators and projects I've built. Tap one to open it.</p>
+    <div class="spectrum" aria-hidden="true">
+      <i style="background:var(--brew)"></i><i style="background:var(--fluid)"></i><i style="background:var(--heat)"></i><i style="background:var(--milk)"></i><i style="background:var(--elec)"></i><i style="background:var(--warn)"></i>
+    </div>
   </header>
+
+  <input class="search" id="q" type="search" placeholder="Search tools..." aria-label="Search tools">
 
   <main>
     <div class="grid" id="grid"></div>
@@ -111,8 +189,12 @@
 <script>
   /* ============================================================
      ADD YOUR ARTIFACTS HERE
-     For each one: create a folder with an index.html inside it,
-     then add an entry below. `url` is the folder name + "/".
+     For each one: upload the file (or a folder with an index.html
+     inside it), then add an entry below. `url` is the file name,
+     or the folder name + "/".
+     `color` sets the card colour. Pick one of:
+     brew (orange), fluid (blue), heat (red), milk (teal),
+     elec (violet), warn (yellow).
      ============================================================ */
   const projects = [
     {
@@ -120,17 +202,28 @@
       description: "Generates Tech service code based on Franke formula.",
       url: "a1000-tech-code.html",
       icon: "⚙️",
-      tags: ["Tool"]
+      tags: ["Tool"],
+      color: "brew"
+    },
+    {
+      title: "Franke A1000 Diagnostic Card",
+      description: "Check-first list, fault finder and searchable error-code tables for the A1000 coffee machine.",
+      url: "a1000-diagnostic-card.html",
+      icon: "☕",
+      tags: ["HVAC", "Reference"],
+      color: "fluid"
     },
     {
       title: "HVAC Agent",
       description: "HVAC tech help for troubleshooting.",
       url: "https://hvac-agent-ivory.vercel.app",
       icon: "❄️",
-      tags: ["HVAC", "Agent"]
+      tags: ["HVAC", "Agent"],
+      color: "milk"
     }
   ];
 
+  const COLORS = ["brew", "fluid", "heat", "milk", "elec", "warn"];
   const grid = document.getElementById("grid");
   const empty = document.getElementById("empty");
   const q = document.getElementById("q");
@@ -139,20 +232,20 @@
 
   function render(list) {
     grid.innerHTML = "";
-    list.forEach(p => {
+    list.forEach((p, i) => {
       const a = document.createElement("a");
       a.className = "card";
       a.href = p.url;
+      const c = COLORS.indexOf(p.color) > -1 ? p.color : COLORS[i % COLORS.length];
+      a.style.setProperty("--hue", "var(--" + c + ")");
+      a.style.setProperty("--hue-ink", "var(--" + c + "-ink)");
+
+      const cap = document.createElement("div");
+      cap.className = "cap";
 
       const icon = document.createElement("div");
       icon.className = "icon";
       icon.textContent = p.icon || "📄";
-
-      const h = document.createElement("h2");
-      h.textContent = p.title;
-
-      const d = document.createElement("p");
-      d.textContent = p.description;
 
       const tags = document.createElement("div");
       tags.className = "tags";
@@ -162,12 +255,23 @@
         s.textContent = t;
         tags.appendChild(s);
       });
+      cap.append(icon, tags);
+
+      const body = document.createElement("div");
+      body.className = "body";
+
+      const h = document.createElement("h2");
+      h.textContent = p.title;
+
+      const d = document.createElement("p");
+      d.textContent = p.description;
 
       const open = document.createElement("div");
       open.className = "open";
       open.textContent = "Open →";
 
-      a.append(icon, h, d, tags, open);
+      body.append(h, d, open);
+      a.append(cap, body);
       grid.appendChild(a);
     });
     empty.style.display = list.length ? "none" : "block";
