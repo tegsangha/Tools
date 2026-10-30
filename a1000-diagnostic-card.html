@@ -1,0 +1,664 @@
+<title>Franke A1000 Diagnostic Card</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  /* Layout: navy hero with a six-colour spectrum bar, sticky search + coloured section chips, one coloured card per machine system. */
+  --bg:#eef3fa; --surface:#ffffff; --surface-2:#f4f7fc; --ink:#0f1b2d; --muted:#4a5a72; --line:#d6dfec;
+  --navy:#0d2b45; --navy-ink:#ffffff; --signal:#ffc21a;
+  --brew:#d9480f; --brew-ink:#ffffff;
+  --fluid:#1971c2; --fluid-ink:#ffffff;
+  --heat:#c92a2a; --heat-ink:#ffffff;
+  --milk:#0b7f6f; --milk-ink:#ffffff;
+  --elec:#6741d9; --elec-ink:#ffffff;
+  --warn:#f5b800; --warn-ink:#2b2100;
+  --font-display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0a111c; --surface:#121c2b; --surface-2:#182538; --ink:#e8eef8; --muted:#9fb0c8; --line:#25354d;
+    --navy:#14395c; --navy-ink:#ffffff;
+    --brew:#ff8a4c; --brew-ink:#2a1100;
+    --fluid:#5aa9ff; --fluid-ink:#04162b;
+    --heat:#ff7b72; --heat-ink:#2d0707;
+    --milk:#3fd3bd; --milk-ink:#032a24;
+    --elec:#a58bff; --elec-ink:#140a3a;
+    --warn:#ffd23f; --warn-ink:#2b2100;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0a111c; --surface:#121c2b; --surface-2:#182538; --ink:#e8eef8; --muted:#9fb0c8; --line:#25354d;
+  --navy:#14395c; --navy-ink:#ffffff;
+  --brew:#ff8a4c; --brew-ink:#2a1100;
+  --fluid:#5aa9ff; --fluid-ink:#04162b;
+  --heat:#ff7b72; --heat-ink:#2d0707;
+  --milk:#3fd3bd; --milk-ink:#032a24;
+  --elec:#a58bff; --elec-ink:#140a3a;
+  --warn:#ffd23f; --warn-ink:#2b2100;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55;
+  padding-block:0 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+.hero,.toolbar,main{max-width:1000px;margin-inline:auto}
+.hero{margin-top:16px;background:var(--navy);color:var(--navy-ink);border-radius:16px;padding:28px clamp(18px,4vw,36px) 0;overflow:hidden}
+.kicker{margin:0;font-family:var(--font-mono);font-weight:500;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--signal)}
+h1{margin:8px 0 10px;font-family:var(--font-display);font-weight:800;font-size:clamp(2rem,7vw,3.4rem);line-height:1.02;letter-spacing:-.02em;text-wrap:balance}
+.sub{margin:0 0 26px;max-width:60ch;color:rgba(255,255,255,.82);font-size:1.02rem}
+.spectrum{display:flex;height:10px;margin-inline:calc(-1 * clamp(18px,4vw,36px))}
+.spectrum i{flex:1}
+.toolbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:12px 0 8px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+#q{width:100%;font:inherit;font-size:1.02rem;padding:13px 16px;border:2px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink)}
+#q::placeholder{color:var(--muted)}
+#q:focus{outline:none;border-color:var(--fluid)}
+a:focus-visible{outline:3px solid var(--signal);outline-offset:2px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 4px;scrollbar-width:thin}
+.chips a{flex:none;padding:6px 14px;border-radius:999px;background:var(--hue);color:var(--hue-ink);text-decoration:none;font-weight:600;font-size:.84rem;white-space:nowrap}
+.chips a:hover{filter:brightness(1.08)}
+.status{margin:6px 0 0;min-height:1.2em;font-size:.86rem;color:var(--muted)}
+main{padding-top:6px;display:grid;gap:26px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;scroll-margin-top:170px}
+.band{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--hue);color:var(--hue-ink);padding:14px clamp(16px,3vw,24px)}
+h2{margin:0;font-family:var(--font-display);font-weight:800;font-size:clamp(1.25rem,3.6vw,1.65rem);line-height:1.15;letter-spacing:-.01em;text-wrap:balance}
+.count{flex:none;font-family:var(--font-mono);font-weight:600;font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.22);color:inherit}
+:root[data-theme="dark"] .count{background:rgba(0,0,0,.18)}
+.lead{margin:0;padding:16px clamp(16px,3vw,24px) 14px;max-width:72ch}
+.pad{padding:0 clamp(16px,3vw,24px) 22px}
+.pad .lead{padding-inline:0}
+.note{margin:0;padding:14px clamp(16px,3vw,24px) 18px;color:var(--muted);font-size:.93rem;max-width:76ch}
+h3{margin:0 0 8px;font-size:1rem;font-weight:600}
+.safety{background:var(--warn);color:var(--warn-ink);border-radius:12px;padding:16px 18px;margin-bottom:22px}
+.safety h3{margin-bottom:10px}
+.tag{display:inline-block;background:var(--warn-ink);color:var(--warn);font-family:var(--font-mono);font-weight:600;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;padding:3px 10px;border-radius:6px}
+.safety ul{margin:0;padding-left:1.1em;display:grid;gap:7px;font-weight:500}
+.checkhead{font-family:var(--font-display);font-weight:800;font-size:1.15rem;margin:6px 0 12px}
+.checks{margin:0;padding:0;list-style:none;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));counter-reset:step}
+.checks li{counter-increment:step;display:flex;gap:14px;align-items:flex-start;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.checks li::before{content:counter(step);flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--navy);color:var(--navy-ink);font-family:var(--font-mono);font-weight:600;font-size:.95rem}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--ink);padding:10px 16px;background:var(--surface-2);background:color-mix(in srgb,var(--hue) 16%,var(--surface));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+td{padding:12px 16px;border-top:1px solid var(--line);vertical-align:top}
+tbody tr:first-child td{border-top:0}
+td.code{min-width:8.5em}
+.pill{display:inline-block;margin:0 5px 5px 0;padding:2px 9px;border-radius:7px;background:var(--hue);color:var(--hue-ink);font-family:var(--font-mono);font-weight:600;font-size:.86rem;line-height:1.5}
+td.sees{font-weight:600;min-width:11em}
+td.sees::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--hue);margin-right:8px}
+a{color:var(--fluid)}
+@media (max-width:720px){
+  .card{scroll-margin-top:190px}
+  table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;border:0}
+  table.stack thead{display:none}
+  .tablewrap{padding:0 12px 12px}
+  table.stack tr{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;padding:12px 14px}
+  table.stack td{padding:5px 0;min-width:0 !important;border:0}
+  table.stack td::before{content:attr(data-label);display:block;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+  table.stack td.sees::before{display:block;width:auto;height:auto;background:none;margin:0;border-radius:0;content:attr(data-label)}
+  .note{padding-top:0}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+<header class="hero">
+<p class="kicker">A1000 &middot; Service reference</p>
+<h1>Franke A1000 Diagnostic Card</h1>
+<p class="sub">Check-first list, quick fault finder and error-code tables for the A1000 bean-to-cup machine. Summarised from Franke&rsquo;s service guide and user manual, as of 30 Oct 2026.</p>
+<div class="spectrum" aria-hidden="true"><i style="background:var(--brew)"></i><i style="background:var(--fluid)"></i><i style="background:var(--heat)"></i><i style="background:var(--milk)"></i><i style="background:var(--elec)"></i><i style="background:var(--warn)"></i></div>
+</header>
+<div class="toolbar">
+<label class="vh" for="q">Search codes or symptoms</label>
+<input id="q" type="search" inputmode="search" autocomplete="off" placeholder="Search a code (e.g. 060) or a word (e.g. boiler)">
+<nav class="chips" aria-label="Sections"><a href="#before-you-start" style="--hue:var(--navy);--hue-ink:var(--navy-ink)">Before you start</a><a href="#fault-finder" style="--hue:var(--navy);--hue-ink:var(--navy-ink)">Fault finder</a><a href="#brewing" style="--hue:var(--brew);--hue-ink:var(--brew-ink)">Brewing unit</a><a href="#fluid" style="--hue:var(--fluid);--hue-ink:var(--fluid-ink)">Fluid</a><a href="#heating" style="--hue:var(--heat);--hue-ink:var(--heat-ink)">Heating</a><a href="#milk" style="--hue:var(--milk);--hue-ink:var(--milk-ink)">Milk</a><a href="#electronics" style="--hue:var(--elec);--hue-ink:var(--elec-ink)">Electronics</a><a href="#warnings" style="--hue:var(--warn);--hue-ink:var(--warn-ink)">Warnings</a></nav>
+<p id="status" class="status" role="status" aria-live="polite"></p>
+</div>
+<main>
+<section id="before-you-start" class="card" style="--hue:var(--navy);--hue-ink:var(--navy-ink)" data-quiet>
+<div class="band"><h2>Before you start</h2><span class="count">6 checks</span></div>
+<div class="pad">
+<p class="lead">Isolate power and let the boilers cool before opening panels, then run the five-minute check below before replacing parts or clearing codes. Most A1000 callbacks are a missing part, a water problem or an overdue clean, not a failed component.</p>
+<div class="safety"><h3><span class="tag">Safety</span></h3><ul><li>Lock out and tag the supply. The machine is a high-load unit: 220-240 V single phase draws 5590-7920 W on a 30 A fuse, and the 2-line 60 Hz version 4500-5300 W on 16 A. Confirm the data plate at each site.</li><li>Hot liquid and steam leave the spouts during cleaning and rinsing. Keep hands clear of spouts and nozzles.</li><li>The powder hopper worm gear can cut or crush. Take care when cleaning it.</li><li>Boiler faults trip at over 150 °C (or 25 °C over setpoint), so treat any heating code as a hot-part job.</li></ul></div>
+<h3 class="checkhead">Check first, every call (about 5 minutes)</h3>
+<ol class="checks"><li>Read the screen. Note the code, the message and the colour (yellow, orange or red edge light). Tap the symbol for the on-screen instructions. Event messages are not shown on screen, only logged, so pull the error history before you restart.</li><li>Record the hardware and software versions: tap the Franke logo, enter the PIN, then menu 0.10 System information.</li><li>Look for a missing or unlocked part. Codes 425-431 and 461 flag a missing or badly seated brewing unit, internal water tank, grounds container, drip tray or bean/powder hopper, or an open grounds door.</li><li>Check water: tap open, no leaks, filter not used up (code 602). Reverse-osmosis water needs at least 30-50 ppm dissolved solids or the boiler can overfill.</li><li>Check clearances: 50 mm at the rear, 200 mm above, 100 mm to the right. Blocked clearance lets heat build up and cause faults.</li><li>Restart once. Most hardware messages say to restart the system. If the same code returns, go to its table below.</li></ol>
+</div></section>
+<section id="fault-finder" class="card" style="--hue:var(--navy);--hue-ink:var(--navy-ink)" data-filter>
+<div class="band"><h2>Quick fault finder</h2><span class="count">11 symptoms</span></div>
+<p class="lead">Start from what the operator sees, jump to the matching code range, and run the first check before opening the detailed table.</p>
+<div class="tablewrap"><table class="stack"><thead><tr>
+<th scope="col">What the operator sees</th>
+<th scope="col">Code range</th>
+<th scope="col">First check</th>
+</tr></thead><tbody>
+<tr data-row style="--hue:var(--brew);--hue-ink:var(--brew-ink)">
+<td class="sees" data-label="What the operator sees">Won&#x27;t brew, brewing unit error</td>
+<td class="code" data-label="Code range"><span class="pill">009-015</span> <span class="pill">027-030</span> <span class="pill">048-049</span></td>
+<td data-label="First check">Restart. Check the incremental sensor and motor, brush the brewing unit clean. For 048/049 pick a new drink (it recalibrates), then check grind quantity and grinder calibration.</td>
+</tr>
+<tr data-row style="--hue:var(--fluid);--hue-ink:var(--fluid-ink)">
+<td class="sees" data-label="What the operator sees">No water, boiler won&#x27;t fill</td>
+<td class="code" data-label="Code range"><span class="pill">060-062</span> <span class="pill">087-088</span></td>
+<td data-label="First check">Water supply and leaks, pump pressure (menu 0.3 Set pressure), pressure relief valve dripping into the drip tray, level sensor scale.</td>
+</tr>
+<tr data-row style="--hue:var(--fluid);--hue-ink:var(--fluid-ink)">
+<td class="sees" data-label="What the operator sees">Water flow weak or stops mid-product</td>
+<td class="code" data-label="Code range"><span class="pill">079-083</span></td>
+<td data-label="First check">Grind not too fine (079), product settings, flow meter, shut-off valve open (080).</td>
+</tr>
+<tr data-row style="--hue:var(--heat);--hue-ink:var(--heat-ink)">
+<td class="sees" data-label="What the operator sees">Products blocked, “please wait”</td>
+<td class="code" data-label="Code range"><span class="pill">507</span> <span class="pill">515</span> <span class="pill">523</span> <span class="pill">549</span></td>
+<td data-label="First check">Heater is still reaching setpoint. Clears on its own when the temperature is reached.</td>
+</tr>
+<tr data-row style="--hue:var(--heat);--hue-ink:var(--heat-ink)">
+<td class="sees" data-label="What the operator sees">Heating fault, restart message</td>
+<td class="code" data-label="Code range"><span class="pill">501-521</span> <span class="pill">538-548</span></td>
+<td data-label="First check">Sensor (NTC), Klixon, heating element, plug and cable, electrical circuit.</td>
+</tr>
+<tr data-row style="--hue:var(--milk);--hue-ink:var(--milk-ink)">
+<td class="sees" data-label="What the operator sees">Milk products blocked</td>
+<td class="code" data-label="Code range"><span class="pill">101-118</span> <span class="pill">617-639</span></td>
+<td data-label="First check">Reversible adapters seated, milk under 8 °C, CAN cable and CAN ID, thermoblock codes.</td>
+</tr>
+<tr data-row style="--hue:var(--elec);--hue-ink:var(--elec-ink)">
+<td class="sees" data-label="What the operator sees">Part or container reported missing</td>
+<td class="code" data-label="Code range"><span class="pill">425-431</span> <span class="pill">461</span></td>
+<td data-label="First check">Reseat and lock the part. Check the grounds-door magnetic switch if 461 persists.</td>
+</tr>
+<tr data-row style="--hue:var(--elec);--hue-ink:var(--elec-ink)">
+<td class="sees" data-label="What the operator sees">Touchscreen or add-on not responding</td>
+<td class="code" data-label="Code range"><span class="pill">291-293</span> <span class="pill">302-308</span> <span class="pill">332-337</span></td>
+<td data-label="First check">Cables and CAN IDs, then touchscreen driver and software versions.</td>
+</tr>
+<tr data-row style="--hue:var(--elec);--hue-ink:var(--elec-ink)">
+<td class="sees" data-label="What the operator sees">Payment unit offline</td>
+<td class="code" data-label="Code range"><span class="pill">206-217</span></td>
+<td data-label="First check">Power to the accounting unit, cable to the machine, decimal places match (217).</td>
+</tr>
+<tr data-row style="--hue:var(--elec);--hue-ink:var(--elec-ink)">
+<td class="sees" data-label="What the operator sees">Grinder pulse error</td>
+<td class="code" data-label="Code range"><span class="pill">551-552</span></td>
+<td data-label="First check">Left (551) or right (552) grinder. The guide lists no steps, so start with the hopper, burrs and wiring.</td>
+</tr>
+<tr data-row style="--hue:var(--warn);--hue-ink:var(--warn-ink)">
+<td class="sees" data-label="What the operator sees">Clean, descale or filter prompts</td>
+<td class="code" data-label="Code range"><span class="pill">403-417</span> <span class="pill">600-602</span> <span class="pill">680-681</span></td>
+<td data-label="First check">Do the cleaning or descaling, replace the filter and reset the counter.</td>
+</tr>
+</tbody></table></div>
+<p class="note">Rows are grouped by system, not ranked by frequency. Use the lessons-learned log at the end to rank them for your sites.</p>
+</section>
+<section id="brewing" class="card" style="--hue:var(--brew);--hue-ink:var(--brew-ink)" data-filter>
+<div class="band"><h2>Brewing unit</h2><span class="count">8 codes</span></div>
+<p class="lead">Most brewing unit codes come down to the chamber not travelling the full distance, so check the incremental sensor, the motor and whether the unit is dirty before replacing anything.</p>
+<div class="tablewrap"><table class="stack"><thead><tr>
+<th scope="col">Code</th>
+<th scope="col">Meaning</th>
+<th scope="col">What to do</th>
+</tr></thead><tbody>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">009-013</span></td>
+<td data-label="Meaning">Motor timeout: too few increments counted while the chamber moved</td>
+<td data-label="What to do">Restart. Check the incremental sensor and the motor. Clean the brewing unit with a brush.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">014</span></td>
+<td data-label="Meaning">Incremental sensor: more than one negative increment, chamber moving the wrong way</td>
+<td data-label="What to do">Check the incremental sensor wiring, then as for 009-013.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">015</span></td>
+<td data-label="Meaning">Motor timeout during cleaning</td>
+<td data-label="What to do">Restart, then repeat the cleaning cycle.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">027</span></td>
+<td data-label="Meaning">Brewing unit locking mechanism: unit not locked</td>
+<td data-label="What to do">The guide lists no steps. Reseat the unit so it locks.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">028</span></td>
+<td data-label="Meaning">Brewing unit missing</td>
+<td data-label="What to do">The guide lists no steps. Fit and lock the brewing unit.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">030</span></td>
+<td data-label="Meaning">Error while recalibrating the brewing unit at start-up</td>
+<td data-label="What to do">Restart. Check the incremental sensor and motor. Clean the unit with a brush.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">048</span></td>
+<td data-label="Meaning">Brew cancelled: chamber opened too far</td>
+<td data-label="What to do">Select a new drink (this recalibrates). If it repeats, check the values in menu 5.2 Brewing unit.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">049</span></td>
+<td data-label="Meaning">Chamber could not close</td>
+<td data-label="What to do">Select a new drink. Check the grind quantity and the grinder calibration (Grinder 1-3).</td>
+</tr>
+</tbody></table></div>
+</section>
+<section id="fluid" class="card" style="--hue:var(--fluid);--hue-ink:var(--fluid-ink)" data-filter>
+<div class="band"><h2>Fluid system</h2><span class="count">13 codes</span></div>
+<p class="lead">Boiler-fill and flow-meter codes usually trace back to supply, a leaking relief valve or limescale on the level sensor, so prove the water side before blaming the pump.</p>
+<div class="tablewrap"><table class="stack"><thead><tr>
+<th scope="col">Code</th>
+<th scope="col">Meaning</th>
+<th scope="col">What to do</th>
+</tr></thead><tbody>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">060</span></td>
+<td data-label="Meaning">Boiler 1 (coffee) could not be filled</td>
+<td data-label="What to do">Restart. Check pump pressure (menu 0.3 Set pressure). Check the boiler 1 pressure relief valve for leaks (water runs into the drip tray). Check the water supply for leaks and flow.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">061</span> <span class="pill">062</span></td>
+<td data-label="Meaning">Boiler 2 (hot water) could not be filled in operation; heater switched off</td>
+<td data-label="What to do">Restart. Check the boiler 2 pressure relief valve for leaks. Check the continuous level sensor for connection and limescale (menu 5.10 Individual inputs). Check the water supply.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">079</span></td>
+<td data-label="Meaning">Flow meter 1: brew boiler flow too low or none</td>
+<td data-label="What to do">Check the grind is not too fine. Check product settings, try another product, check the flow meter.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">080</span></td>
+<td data-label="Meaning">Flow meter 2: tea boiler flow disrupted</td>
+<td data-label="What to do">Check product settings, try another product, check the flow meter, open the shut-off valve.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">081</span></td>
+<td data-label="Meaning">Flow meter 3: cold water bypass</td>
+<td data-label="What to do">Restart or try another product. The guide lists no further steps.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">082</span></td>
+<td data-label="Meaning">Flow meter 4: Iced Coffee Module</td>
+<td data-label="What to do">Restart or try another product. The guide lists no further steps.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">083</span></td>
+<td data-label="Meaning">Flow meter 5: cold water flow</td>
+<td data-label="What to do">Restart or try another product. The guide lists no further steps.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">087</span></td>
+<td data-label="Meaning">Start-up: 100 ml not dosed through the brewing and bypass valves within 25 s</td>
+<td data-label="What to do">Restart. Check the water supply and the water circuit for leaks.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">088</span></td>
+<td data-label="Meaning">Start-up: minimum steam boiler level not reached in 25 s; boiler keeps filling</td>
+<td data-label="What to do">Wait at least 4 minutes (another error appears if the level is still not reached). Check the continuous level sensor and replace if needed. Check supply and leaks.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">090</span> <span class="pill">091</span></td>
+<td data-label="Meaning">iQFlow needle valve not working properly</td>
+<td data-label="What to do">Restart the system.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">092</span></td>
+<td data-label="Meaning">Needle valve will not close, or brewing unit not tight</td>
+<td data-label="What to do">The guide lists no steps. Check the brewing unit seals and the needle valve.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">094</span></td>
+<td data-label="Meaning">Brewing module may be leaking</td>
+<td data-label="What to do">Check the brewing module for leakage.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">096</span></td>
+<td data-label="Meaning">Steam boiler level sensor</td>
+<td data-label="What to do">The guide gives no detail. Check the level sensor and its connection.</td>
+</tr>
+</tbody></table></div>
+</section>
+<section id="heating" class="card" style="--hue:var(--heat);--hue-ink:var(--heat-ink)" data-filter>
+<div class="band"><h2>Heating system</h2><span class="count">8 codes</span></div>
+<p class="lead">Heating codes repeat the same pattern for each boiler, so learn the fault type once and read the code to find which heater it is.</p>
+<div class="tablewrap"><table class="stack"><thead><tr>
+<th scope="col">Fault type</th>
+<th scope="col">Codes</th>
+<th scope="col">What it means</th>
+<th scope="col">What to do</th>
+</tr></thead><tbody>
+<tr data-row>
+<td data-label="Fault type">Sensor short circuit</td>
+<td class="code" data-label="Codes"><span class="pill">501 (steam)</span> <span class="pill">509 (brew)</span> <span class="pill">517 (thermoblock)</span> <span class="pill">544 (hot water)</span></td>
+<td data-label="What it means">NTC temperature sensor shorted</td>
+<td data-label="What to do">Restart. Check the NTC and replace if needed. Check the sensor cable and plug.</td>
+</tr>
+<tr data-row>
+<td data-label="Fault type">Sensor open or missing</td>
+<td class="code" data-label="Codes"><span class="pill">502 (steam)</span> <span class="pill">510 (brew)</span> <span class="pill">518 (thermoblock)</span> <span class="pill">545 (hot water)</span></td>
+<td data-label="What it means">NTC missing or interrupted</td>
+<td data-label="What to do">Same as above.</td>
+</tr>
+<tr data-row>
+<td data-label="Fault type">No temperature rise</td>
+<td class="code" data-label="Codes"><span class="pill">503 (steam)</span> <span class="pill">511 (brew)</span> <span class="pill">519 (thermoblock)</span> <span class="pill">546 (hot water)</span></td>
+<td data-label="What it means">Less than 2 °C rise in 60 s while heating (3 °C for the thermoblock)</td>
+<td data-label="What to do">Restart. Check the electrical circuit, the Klixon, the NTC, the heating element and the connections.</td>
+</tr>
+<tr data-row>
+<td data-label="Fault type">Over-temperature</td>
+<td class="code" data-label="Codes"><span class="pill">504 (steam)</span> <span class="pill">512 (brew)</span> <span class="pill">547 (hot water)</span> <span class="pill">520 (thermoblock)</span></td>
+<td data-label="What it means">Above 150 °C or 25 °C over the setpoint (thermoblock: 15 °C over)</td>
+<td data-label="What to do">Same checks as for no temperature rise.</td>
+</tr>
+<tr data-row>
+<td data-label="Fault type">Heater on too long</td>
+<td class="code" data-label="Codes"><span class="pill">505 (steam)</span> <span class="pill">513 (brew)</span> <span class="pill">548 (hot water)</span> <span class="pill">521 (thermoblock)</span></td>
+<td data-label="What it means">Heater time-out</td>
+<td data-label="What to do">Same checks as for no temperature rise.</td>
+</tr>
+<tr data-row>
+<td data-label="Fault type">Slow to reach setpoint</td>
+<td class="code" data-label="Codes"><span class="pill">507 (steam)</span> <span class="pill">515 (brew)</span> <span class="pill">549 (hot water)</span> <span class="pill">523 (thermoblock)</span></td>
+<td data-label="What it means">Element on continuously for 3 min (steam, thermoblock) or 6 min (brew, hot water). Products blocked.</td>
+<td data-label="What to do">Wait. The message clears when the setpoint is reached. If it keeps returning, treat it as a no-temperature-rise fault.</td>
+</tr>
+<tr data-row>
+<td data-label="Fault type">Steam boiler pressure sensor</td>
+<td class="code" data-label="Codes"><span class="pill">538 (short)</span> <span class="pill">539 (missing or open)</span></td>
+<td data-label="What it means">Pressure sensor fault on H2</td>
+<td data-label="What to do">Restart. Check the sensor and its connections.</td>
+</tr>
+<tr data-row>
+<td data-label="Fault type">Heater input/output/surface sensors</td>
+<td class="code" data-label="Codes"><span class="pill">585-590</span> <span class="pill">591-593</span> <span class="pill">594-595</span> <span class="pill">597</span> <span class="pill">599</span></td>
+<td data-label="What it means">Sensor faults, temperature rise too low, over-temperature, heater timeout, deviation, failed H1 or H2 check</td>
+<td data-label="What to do">The guide lists no steps. Use the heating test menu and the same checks as above.</td>
+</tr>
+</tbody></table></div>
+<p class="note">Heater numbering varies. The guide calls heater 2 the steam boiler in the 5xx codes but the hot-water boiler in the 06x fill codes. Confirm against the wiring diagram on the machine in front of you. The guide&#x27;s lists also say “check heating element 2” under boiler 1 and 3 codes, which looks like a copy-over: test the element for the heater the code names.</p>
+</section>
+<section id="milk" class="card" style="--hue:var(--milk);--hue-ink:var(--milk-ink)" data-filter>
+<div class="band"><h2>Milk, cooling unit and steam</h2><span class="count">16 codes</span></div>
+<p class="lead">Milk faults are mostly physical (adapter seated, switch position, milk under 8 °C) or a CAN communication problem, so check those before the controller.</p>
+<div class="tablewrap"><table class="stack"><thead><tr>
+<th scope="col">Code</th>
+<th scope="col">Meaning</th>
+<th scope="col">What to do</th>
+</tr></thead><tbody>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">101</span></td>
+<td data-label="Meaning">FoamMaster controller hardware error (short circuit)</td>
+<td data-label="What to do">Check the connection cable. Check the other CAN nodes (menu 5.9 Individual outputs, CAN bus test).</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">102</span></td>
+<td data-label="Meaning">FoamMaster software out of date</td>
+<td data-label="What to do">Update with the Service Tool. The minimum version shows on screen; the installed one is under 0.10 System information.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">104</span></td>
+<td data-label="Meaning">Milk flow affected: flow meter sees too few or no pulses</td>
+<td data-label="What to do">Select a new product, restart.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">110-113</span></td>
+<td data-label="Meaning">Cooling unit temperature sensor interrupted (110-112) or shorted (113)</td>
+<td data-label="What to do">The guide lists no steps. Check the sensor and its wiring.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">116-118</span></td>
+<td data-label="Meaning">Milk thermoblock high-temperature regeneration timing, or failed (118)</td>
+<td data-label="What to do">The guide lists no steps. Treat 118 as a thermoblock fault.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">335</span></td>
+<td data-label="Meaning">Cooling unit not responding</td>
+<td data-label="What to do">Check the cable between machine and cooling unit, and the CAN ID. Check other CAN nodes (menu 5.9).</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">336-338</span></td>
+<td data-label="Meaning">FoamMaster not responding (336, 337) or reset during a milk product (338)</td>
+<td data-label="What to do">Check the cable, the CAN ID and the other CAN nodes. A running milk clean is interrupted and the machine goes to energy-saving mode.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">360</span> <span class="pill">361</span></td>
+<td data-label="Meaning">Milk system configured wrongly, or type and position already assigned</td>
+<td data-label="What to do">Check the milk system configuration (menu 0.1 Set machine) and the cooling unit wiring.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">623</span> <span class="pill">624</span></td>
+<td data-label="Meaning">Milk warmer than 8 °C in the milk system or FoamMaster</td>
+<td data-label="What to do">The guide lists no steps. Check the cooling unit is running and the milk was pre-cooled.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">625</span> <span class="pill">637</span></td>
+<td data-label="Meaning">Left or right reversible adapter missing or not seated</td>
+<td data-label="What to do">Fit or flip the adapter, especially right after a cleaning cycle.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">628</span> <span class="pill">638</span></td>
+<td data-label="Meaning">Milk system could not be prepared; milk blocked</td>
+<td data-label="What to do">The guide lists no steps. Re-run the prepare step (629, 639) and check the adapters and tubing.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">634</span> <span class="pill">635</span> <span class="pill">674</span> <span class="pill">675</span></td>
+<td data-label="Meaning">Cooling unit cleaning/drink-preparation switch in the wrong position</td>
+<td data-label="What to do">Set the switch to Cleaning before cleaning and back to Drink preparation afterwards.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">630</span> <span class="pill">631</span> <span class="pill">632</span> <span class="pill">633</span> <span class="pill">685</span> <span class="pill">686</span></td>
+<td data-label="Meaning">Clean solution empty, cleaning container or cartridge missing</td>
+<td data-label="What to do">Fit a full clean-solution bottle or cartridge, and seat the cleaning container.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">658</span></td>
+<td data-label="Meaning">Milk system cleaning stopped by an internal error</td>
+<td data-label="What to do">The guide lists no steps. Repeat the cleaning. If it fails again, check the milk pump and FoamMaster communication (336-338).</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">700</span> <span class="pill">701</span></td>
+<td data-label="Meaning">CleanMaster not responding within 10 s (701: cleaning interrupted)</td>
+<td data-label="What to do">Check the connections to the cooling unit and the CAN ID.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">580</span> <span class="pill">581</span></td>
+<td data-label="Meaning">Autosteam temperature sensor shorted (580) or interrupted (581)</td>
+<td data-label="What to do">Check the sensor and replace if needed. Check the cable and plug. Restart and select the product again.</td>
+</tr>
+</tbody></table></div>
+<p class="note">Milk-low prompts (617-622, 626, 627, 817-822) only need fresh, pre-cooled milk in the named container.</p>
+</section>
+<section id="electronics" class="card" style="--hue:var(--elec);--hue-ink:var(--elec-ink)" data-filter>
+<div class="band"><h2>Electronics, communication, grinder and operation</h2><span class="count">18 codes</span></div>
+<p class="lead">For communication codes, check cables and CAN IDs first, then software versions. For operation codes, the fix is usually a part that is missing, unlocked or interrupted.</p>
+<div class="tablewrap"><table class="stack"><thead><tr>
+<th scope="col">Code</th>
+<th scope="col">Meaning</th>
+<th scope="col">What to do</th>
+</tr></thead><tbody>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">149</span></td>
+<td data-label="Meaning">Fault on an add-on unit</td>
+<td data-label="What to do">Read the message on the add-on unit&#x27;s own display.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">290</span></td>
+<td data-label="Meaning">RFID module link lost or module faulty</td>
+<td data-label="What to do">The guide lists no steps. Check the module cable and connector.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">291-293</span></td>
+<td data-label="Meaning">Touchscreen not working (291), working again (292), hardware or software fault with no driver (293)</td>
+<td data-label="What to do">The guide lists no steps. Check the display cable, then software version.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">302</span> <span class="pill">306</span> <span class="pill">308</span> <span class="pill">395</span> <span class="pill">397</span></td>
+<td data-label="Meaning">Process PCA or PIC not responding, old software, or reset. 395 means no products can be prepared.</td>
+<td data-label="What to do">The guide lists no steps. Check the board cabling and update the software if 306 appears.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">320</span> <span class="pill">321</span></td>
+<td data-label="Meaning">No signal from the spout motor incremental sensor</td>
+<td data-label="What to do">The guide lists no steps. Check the spout motor sensor and wiring.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">322</span></td>
+<td data-label="Meaning">Hardware versions not compatible</td>
+<td data-label="What to do">The guide lists no steps. Compare the versions in menu 0.10 System information.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">332</span></td>
+<td data-label="Meaning">I2C communication with iQFlow faulty</td>
+<td data-label="What to do">The guide lists no steps. Check the iQFlow connection.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">333</span></td>
+<td data-label="Meaning">Flavor Station not responding</td>
+<td data-label="What to do">Check the cable between machine and Flavor Station, and the CAN ID. Check other CAN nodes (menu 5.9).</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">357</span> <span class="pill">359</span></td>
+<td data-label="Meaning">Integrity test failed during a software update, or machine type import failed</td>
+<td data-label="What to do">The guide lists no steps. Repeat the update from a known-good file.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">362</span> <span class="pill">363</span></td>
+<td data-label="Meaning">Water tank or drip tray sensor link interrupted</td>
+<td data-label="What to do">Check wiring, fill the fresh water tank, empty the wastewater tank, check the position of the continuous level sensors.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">120</span></td>
+<td data-label="Meaning">Powder system water flow disrupted</td>
+<td data-label="What to do">Check the powder water circuit, clean the mixing chamber, run the cleaning program. Keep the door open at least 20 s for the message to clear.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">206-217</span></td>
+<td data-label="Meaning">Accounting or payment unit faults</td>
+<td data-label="What to do">Check power to the accounting unit and the cable to the machine (209-212). Restart (208). For 217, make the decimal places match on both units.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">230-237</span> <span class="pill">246</span></td>
+<td data-label="Meaning">Telemetry cannot connect to the module, network or server</td>
+<td data-label="What to do">The guide lists no steps. Check network and registration.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">403</span> <span class="pill">410</span></td>
+<td data-label="Meaning">Descaling failed, or descaler ran out mid-cycle</td>
+<td data-label="What to do">Fit a full original descaling cartridge and repeat.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">425-434</span></td>
+<td data-label="Meaning">Brewing unit, internal tank, grounds container, drip tray, hopper or cleaning container missing or not locked</td>
+<td data-label="What to do">Reseat and lock the named part. For 431, lock the bean or powder hopper fully.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">456-459</span></td>
+<td data-label="Meaning">Cleaning cancelled: door opened (456), grounds door held open under 1 s (457), door not opened within 20 s of the prompt (458), or cancelled by a technician service code (459)</td>
+<td data-label="What to do">Restart the clean and follow the prompts.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">461</span></td>
+<td data-label="Meaning">Grounds door open</td>
+<td data-label="What to do">Empty the grounds container and close the door. If it persists, check the magnetic switch (menu 5.10 Individual inputs). The product is cancelled.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">551</span> <span class="pill">552</span></td>
+<td data-label="Meaning">Pulse error on the left (551) or right (552) grinder</td>
+<td data-label="What to do">The guide lists no steps. Check the grinder motor, its sensor and wiring, and the hopper for foreign objects.</td>
+</tr>
+</tbody></table></div>
+</section>
+<section id="warnings" class="card" style="--hue:var(--warn);--hue-ink:var(--warn-ink)" data-filter>
+<div class="band"><h2>Warnings and status messages</h2><span class="count">11 codes</span></div>
+<p class="lead">These are operator-level prompts, but they cause a lot of “the machine is broken” calls. Clearing them is often the whole repair.</p>
+<div class="tablewrap"><table class="stack"><thead><tr>
+<th scope="col">Code</th>
+<th scope="col">Meaning</th>
+<th scope="col">What to do</th>
+</tr></thead><tbody>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">600</span></td>
+<td data-label="Meaning">Maintenance due</td>
+<td data-label="What to do">Do the maintenance per the plan, then reset the maintenance counter.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">601</span></td>
+<td data-label="Meaning">System calcified: measured water hardness too high for too long, scale risk on the level sensor and boiler</td>
+<td data-label="What to do">Replace the water filter and reset the filter counter.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">602</span></td>
+<td data-label="Meaning">Water filter used up</td>
+<td data-label="What to do">Replace the filter and reset the counter.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">603</span> <span class="pill">604</span></td>
+<td data-label="Meaning">Grounds container full (604: only a few brews left)</td>
+<td data-label="What to do">Remove, empty, clean and refit. Keep the door open at least 5 s.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">607</span></td>
+<td data-label="Meaning">No coffee in the brewing chamber</td>
+<td data-label="What to do">Check the ground coffee chute and brush it clean. Check the bean monitor photoelectric sensor. Add beans or ground coffee. Check the hoppers are locked.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">606</span> <span class="pill">608</span> <span class="pill">609</span> <span class="pill">610</span> <span class="pill">613</span> <span class="pill">614</span></td>
+<td data-label="Meaning">Bean or powder hopper empty, or manual insertion flap open</td>
+<td data-label="What to do">Refill or close the flap.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">660-665</span></td>
+<td data-label="Meaning">Internal water tank low or empty, external fresh tank empty or wastewater tank full, drip tray full</td>
+<td data-label="What to do">Fill or empty the named tank or tray.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">653-655</span></td>
+<td data-label="Meaning">Flavor Station needs cleaning or preparing</td>
+<td data-label="What to do">Use the Cleaning and maintenance menu.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">412</span> <span class="pill">413</span> <span class="pill">416</span> <span class="pill">417</span></td>
+<td data-label="Meaning">CleanMaster cleaning container full, or cleaning agent expired</td>
+<td data-label="What to do">Empty the container or fit a new cleaning cartridge.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">669</span> <span class="pill">670</span> <span class="pill">682</span> <span class="pill">683</span></td>
+<td data-label="Meaning">Descaling overdue, due soon, or cartridge not detected</td>
+<td data-label="What to do">Fit a full original descaling cartridge and descale.</td>
+</tr>
+<tr data-row>
+<td class="code" data-label="Code"><span class="pill">680</span> <span class="pill">681</span></td>
+<td data-label="Meaning">Cleaning due soon or now</td>
+<td data-label="What to do">Run the cleaning program.</td>
+</tr>
+</tbody></table></div>
+</section>
+</main>
+<script>
+(function(){
+  var q=document.getElementById('q'), status=document.getElementById('status');
+  var rows=[].slice.call(document.querySelectorAll('tbody tr[data-row]'));
+  var secs=[].slice.call(document.querySelectorAll('section[data-filter]'));
+  var quiet=[].slice.call(document.querySelectorAll('[data-quiet]'));
+  function nums(cell){
+    var out=[], t=cell?cell.textContent:'', re=/(\d{3})\s*-\s*(\d{3})|(\d{3})/g, m;
+    while((m=re.exec(t))){ if(m[1]) out.push([+m[1],+m[2]]); else out.push([+m[3],+m[3]]); }
+    return out;
+  }
+  rows.forEach(function(r){ r._t=r.textContent.toLowerCase(); r._n=nums(r.querySelector('td.code')); });
+  function apply(){
+    var v=q.value.trim().toLowerCase(), n=/^\d{3}$/.test(v)?+v:null, shown=0;
+    rows.forEach(function(r){
+      var ok=!v||r._t.indexOf(v)>-1||(n!==null&&r._n.some(function(p){return n>=p[0]&&n<=p[1];}));
+      r.hidden=!ok; if(ok) shown++;
+    });
+    secs.forEach(function(s){ s.hidden=!!v&&!s.querySelector('tbody tr:not([hidden])'); });
+    quiet.forEach(function(s){ s.hidden=!!v; });
+    if(!v){ status.textContent=''; }
+    else if(shown===0){ status.textContent='No match. Try the three-digit code, or a word like boiler or milk.'; }
+    else { status.textContent=shown+(shown===1?' matching row':' matching rows'); }
+  }
+  q.addEventListener('input',apply);
+  apply();
+})();
+</script>
